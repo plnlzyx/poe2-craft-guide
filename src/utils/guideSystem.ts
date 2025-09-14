@@ -269,12 +269,6 @@ export class GuideManager {
     return Object.values(this.guides).filter(guide => guide.author === author);
   }
 
-  getGuidesByTags(tags: string[]): CraftGuide[] {
-    return Object.values(this.guides).filter(guide =>
-      tags.some(tag => guide.tags.includes(tag))
-    );
-  }
-
   // Guide step management
   addStep(guideId: string, step: GuideStep, position?: number): boolean {
     const guide = this.guides[guideId];

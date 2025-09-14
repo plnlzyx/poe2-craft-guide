@@ -160,8 +160,6 @@ export interface CraftGuide {
   steps: GuideStep[];
   
   // Metadata
-  tags: string[];
-  difficulty: 'beginner' | 'intermediate' | 'advanced' | 'expert';
   estimatedCost?: Record<string, number>;
   successRate?: number;
   

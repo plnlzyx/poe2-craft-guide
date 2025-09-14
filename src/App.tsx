@@ -70,9 +70,12 @@ function App() {
         },
         modifiers: []
       },
+      targetItem: {
+        properties: {
+          fireDamage: { id: 'fire-dmg', name: 'Fire Damage', value: '47-8', type: 'string' }
+        }
+      },
       steps: [],
-      tags: ['bow', 'physical', 'crafting', 'rare'],
-      difficulty: 'intermediate',
       isPublic: true
     });
 

@@ -92,38 +92,6 @@ const GuideInfo = styled.div`
   color: #95a5a6;
 `;
 
-const DifficultyBadge = styled.span<{ difficulty: string }>`
-  background-color: ${props => {
-    switch (props.difficulty) {
-      case 'beginner': return '#27ae60';
-      case 'intermediate': return '#f39c12';
-      case 'advanced': return '#e67e22';
-      case 'expert': return '#e74c3c';
-      default: return '#95a5a6';
-    }
-  }};
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
-`;
-
-const TagsContainer = styled.div`
-  margin: 0.5rem 0;
-`;
-
-const Tag = styled.span`
-  background-color: #555;
-  color: #ecf0f1;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  margin-right: 0.5rem;
-  margin-bottom: 0.25rem;
-  display: inline-block;
-`;
-
 const EmptyState = styled.div`
   text-align: center;
   color: #7f8c8d;
@@ -168,7 +136,6 @@ const GuideList: React.FC<GuideListProps> = ({ guideManager }) => {
       const filtered = guides.filter(guide =>
         guide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         guide.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        guide.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
         guide.author.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setFilteredGuides(filtered);
@@ -214,21 +181,12 @@ const GuideList: React.FC<GuideListProps> = ({ guideManager }) => {
               
               <GuideDescription>{guide.description}</GuideDescription>
               
-              <TagsContainer>
-                {guide.tags.map((tag, index) => (
-                  <Tag key={index}>{tag}</Tag>
-                ))}
-              </TagsContainer>
-              
               <GuideMetadata>
                 <GuideInfo>
                   <div>By {guide.author}</div>
                   <div>Updated {formatDate(guide.updatedAt)}</div>
                   <div>{guide.steps.length} steps</div>
                 </GuideInfo>
-                <DifficultyBadge difficulty={guide.difficulty}>
-                  {guide.difficulty}
-                </DifficultyBadge>
               </GuideMetadata>
             </GuideCard>
           ))}

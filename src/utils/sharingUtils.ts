@@ -146,7 +146,7 @@ export class SharingManager {
   }
 
   // Search public guides (placeholder)
-  searchPublicGuides(query: string, tags?: string[]): CraftGuide[] {
+  searchPublicGuides(query: string): CraftGuide[] {
     const publicGuides = this.getPublicGuides();
     
     return publicGuides.filter(guide => {
@@ -155,10 +155,7 @@ export class SharingManager {
         guide.description.toLowerCase().includes(query.toLowerCase()) ||
         guide.author.toLowerCase().includes(query.toLowerCase());
       
-      const matchesTags = !tags || tags.length === 0 ||
-        tags.some(tag => guide.tags.includes(tag));
-      
-      return matchesQuery && matchesTags;
+      return matchesQuery;
     });
   }
 }

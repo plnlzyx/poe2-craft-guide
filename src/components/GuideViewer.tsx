@@ -12,6 +12,25 @@ const Container = styled.div`
   padding: 2rem 0;
 `;
 
+const Header = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 2rem;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const GuideMeta = styled.div`
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+`;
+
 const Title = styled.h2`
   color: #ecf0f1;
   margin: 0 0 1rem 0;
@@ -39,14 +58,14 @@ const Description = styled.p`
 `;
 
 const MetadataGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const MetadataItem = styled.div`
   color: #95a5a6;
+  font-size: 0.8rem;
 `;
 
 const MetadataLabel = styled.span`
@@ -54,40 +73,9 @@ const MetadataLabel = styled.span`
   font-weight: 500;
 `;
 
-const TagsContainer = styled.div`
-  margin: 1rem 0;
-`;
-
-const Tag = styled.span`
-  background-color: #555;
-  color: #ecf0f1;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  margin-right: 0.5rem;
-  display: inline-block;
-`;
-
-const DifficultyBadge = styled.span<{ difficulty: string }>`
-  background-color: ${props => {
-    switch (props.difficulty) {
-      case 'beginner': return '#27ae60';
-      case 'intermediate': return '#f39c12';
-      case 'advanced': return '#e67e22';
-      case 'expert': return '#e74c3c';
-      default: return '#95a5a6';
-    }
-  }};
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: 500;
-`;
-
 const MainLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 400px 1fr;
   gap: 2rem;
   margin-top: 2rem;
   
@@ -295,13 +283,7 @@ const GuideViewer: React.FC<GuideViewerProps> = ({ guideManager, actionRegistry 
   };
 
   const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(new Date(date));
+    return new Intl.DateTimeFormat('en-CA').format(new Date(date));
   };
 
   if (loading) {
@@ -329,42 +311,64 @@ const GuideViewer: React.FC<GuideViewerProps> = ({ guideManager, actionRegistry 
 
   return (
     <Container>
-      <Title>{guide.title}</Title>
-      
-      <Section>
-        <Description>{guide.description}</Description>
+      <Header>
+        {guide.targetItem && (
+          <ItemSection>
+            <h4>End Goal Item</h4>
+            <ItemDisplay 
+              item={{
+                ...currentItem,
+                ...guide.targetItem,
+                id: 'target-' + currentItem.id
+              } as Item} 
+            />
+          </ItemSection>
+        )}
         
-        <MetadataGrid>
-          <MetadataItem>
-            <MetadataLabel>Author:</MetadataLabel> {guide.author}
-          </MetadataItem>
-          <MetadataItem>
-            <MetadataLabel>Version:</MetadataLabel> {guide.version}
-          </MetadataItem>
-          <MetadataItem>
-            <MetadataLabel>Created:</MetadataLabel> {formatDate(guide.createdAt)}
-          </MetadataItem>
-          <MetadataItem>
-            <MetadataLabel>Updated:</MetadataLabel> {formatDate(guide.updatedAt)}
-          </MetadataItem>
-          <MetadataItem>
-            <MetadataLabel>Steps:</MetadataLabel> {guide.steps.length}
-          </MetadataItem>
-          <MetadataItem>
-            <MetadataLabel>Difficulty:</MetadataLabel> <DifficultyBadge difficulty={guide.difficulty}>{guide.difficulty}</DifficultyBadge>
-          </MetadataItem>
-        </MetadataGrid>
-        
-        <TagsContainer>
-          <MetadataLabel>Tags:</MetadataLabel>{' '}
-          {guide.tags.map((tag, index) => (
-            <Tag key={index}>{tag}</Tag>
-          ))}
-        </TagsContainer>
-      </Section>
+        <GuideMeta>
+          <Title>{guide.title}</Title>
+          <Description>{guide.description}</Description>
+          
+          <MetadataGrid>
+            <MetadataItem>
+              <MetadataLabel>Author:</MetadataLabel> {guide.author}
+            </MetadataItem>
+            <MetadataItem>
+              <MetadataLabel>Version:</MetadataLabel> {guide.version}
+            </MetadataItem>
+            <MetadataItem>
+              <MetadataLabel>Created:</MetadataLabel> {formatDate(guide.createdAt)}
+            </MetadataItem>
+            <MetadataItem>
+              <MetadataLabel>Updated:</MetadataLabel> {formatDate(guide.updatedAt)}
+            </MetadataItem>
+            <MetadataItem>
+              <MetadataLabel>Steps:</MetadataLabel> {guide.steps.length}
+            </MetadataItem>
+          </MetadataGrid>
+        </GuideMeta>
+      </Header>
 
       <MainLayout>
         <LeftColumn>
+          <ItemSection>
+            <h4>Current Item</h4>
+            <ItemDisplay item={currentItem} />
+          </ItemSection>
+          
+          {guide.estimatedCost && (
+            <ItemSection>
+              <h4>Estimated Cost</h4>
+              {Object.entries(guide.estimatedCost).map(([currency, amount]) => (
+                <div key={currency} style={{ color: '#bdc3c7', marginBottom: '0.25rem' }}>
+                  <MetadataLabel>{currency}:</MetadataLabel> {amount}
+                </div>
+              ))}
+            </ItemSection>
+          )}
+        </LeftColumn>
+        
+        <RightColumn>
           <Section>
             <SectionTitle>Interactive Guide Execution</SectionTitle>
             
@@ -391,37 +395,6 @@ const GuideViewer: React.FC<GuideViewerProps> = ({ guideManager, actionRegistry 
               onStepClick={handleStepClick}
             />
           </Section>
-        </LeftColumn>
-        
-        <RightColumn>
-          <ItemSection>
-            <h4>Current Item</h4>
-            <ItemDisplay item={currentItem} />
-          </ItemSection>
-          
-          {guide.targetItem && (
-            <ItemSection>
-              <h4>Target Item</h4>
-              <ItemDisplay 
-                item={{
-                  ...currentItem,
-                  ...guide.targetItem,
-                  id: 'target-' + currentItem.id
-                } as Item} 
-              />
-            </ItemSection>
-          )}
-          
-          {guide.estimatedCost && (
-            <ItemSection>
-              <h4>Estimated Cost</h4>
-              {Object.entries(guide.estimatedCost).map(([currency, amount]) => (
-                <div key={currency} style={{ color: '#bdc3c7', marginBottom: '0.25rem' }}>
-                  <MetadataLabel>{currency}:</MetadataLabel> {amount}
-                </div>
-              ))}
-            </ItemSection>
-          )}
         </RightColumn>
       </MainLayout>
     </Container>

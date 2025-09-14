@@ -178,8 +178,6 @@ const GuideCreator: React.FC<GuideCreatorProps> = ({
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [author, setAuthor] = useState('');
-  const [difficulty, setDifficulty] = useState<CraftGuide['difficulty']>('beginner');
-  const [tags, setTags] = useState('');
   const [steps, setSteps] = useState<GuideStep[]>([]);
   const [showStepCreator, setShowStepCreator] = useState(false);
   const [targetItem, setTargetItem] = useState<Item | null>(null);
@@ -230,8 +228,6 @@ const GuideCreator: React.FC<GuideCreatorProps> = ({
           modifiers: targetItem.modifiers
         } : undefined,
         steps,
-        tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-        difficulty,
         isPublic: true
       });
 
@@ -241,8 +237,6 @@ const GuideCreator: React.FC<GuideCreatorProps> = ({
       setTitle('');
       setDescription('');
       setAuthor('');
-      setDifficulty('beginner');
-      setTags('');
       setSteps([]);
       setTargetItem(null);
     } catch (error) {
@@ -303,29 +297,6 @@ const GuideCreator: React.FC<GuideCreatorProps> = ({
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="Your name or username..."
-          />
-        </FormGroup>
-        
-        <FormGroup>
-          <Label>Difficulty</Label>
-          <Select
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value as CraftGuide['difficulty'])}
-          >
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-            <option value="expert">Expert</option>
-          </Select>
-        </FormGroup>
-        
-        <FormGroup>
-          <Label>Tags</Label>
-          <Input
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            placeholder="Enter tags separated by commas (e.g., sword, rare, endgame)..."
           />
         </FormGroup>
       </Section>
